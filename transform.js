@@ -12,7 +12,13 @@ const REACTION_TYPES = {
   2006: "emoji",
 };
 
-// ---------- Helpers (private to this file) ----------
+// Helpers
+function targetGuid(raw) {
+  if (!raw) return null;
+  const match = raw.match(/[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}/i);
+  return match ? match[0] : null;
+}
+
 function appleToDate(appleDate) {
   // Newer macOS stores nanoseconds; very old messages store seconds.
   const ms = appleDate > 1e12 ? appleDate / 1e6 : appleDate * 1000;
@@ -36,7 +42,7 @@ function contactName(first, last) {
   return name || null;
 }
 
-// ---------- Transform ----------
+// Transform
 export function transform(data) {
   const { chats, contacts, handles, messages, reactions } = data;
 
@@ -77,6 +83,7 @@ export function transform(data) {
   }
 
   people.set(ME_KEY, { personKey: ME_KEY, contactId: null, name: MY_NAME });
+  personHandles.push({ handle: ME_KEY, personKey: ME_KEY });
 
   // Senders and reactors -> personKey
   const personKeyByHandle = new Map();
@@ -107,7 +114,7 @@ export function transform(data) {
       return {
         reactionId: r.guid,
         reactorKey: senderKey(r.is_from_me, r.sender),
-        targetMsgId: r.associated_message_guid,
+        targetMsgId: targetGuid(r.associated_message_guid),
         type: type,
         date: appleToDate(r.date),
         emoji: type === "emoji" ? r.associated_message_emoji : null,
@@ -118,7 +125,7 @@ export function transform(data) {
   // Chat names
   const cleanChats = chats.map((c) => {
     let displayName = c.display_name || null;
-    const isOneOnOne = c.chat_identifier && !c.chat_identifier.startsWith("chat");
+    const isOneOnOne = c.guid.includes(";-;");
 
     if (!displayName && isOneOnOne) {
       const contact = contactByHandle.get(normalizeHandle(c.chat_identifier));
