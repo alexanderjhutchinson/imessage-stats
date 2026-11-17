@@ -35,11 +35,11 @@ The connection settings are in `PG_CONFIG` in `import/config.js`. Change the `us
 
 **3. Copy your Messages and Contacts databases into `db/`**
 
-Copy these two files into a `db/` folder in the project, renaming them as shown (Finder is fine; press Cmd+Shift+G to open a `~/Library` path):
+Copy these two files into a `db/` folder in the project, renaming them as shown:
 
-| Copy | To |
-|---|---|
-| `~/Library/Messages/chat.db` | `db/chat-copy.db` |
+| Copy                                                                            | To                        |
+| ------------------------------------------------------------------------------- | ------------------------- |
+| `~/Library/Messages/chat.db`                                                    | `db/chat-copy.db`         |
 | `~/Library/Application Support/AddressBook/Sources/<ID>/AddressBook-v22.abcddb` | `db/contacts-copy.abcddb` |
 
 Use the Contacts file inside `Sources/`, not the one at the top of `AddressBook/`, which has no contacts in it. If `Sources/` has more than one folder, use the largest file.
@@ -80,17 +80,17 @@ Then repeat steps 2 to 4 from the project root.
 
 Every endpoint is a GET request and returns JSON. The common filters are all optional: `chat` (a chat ID), `person` (a user ID), and `from` / `to` (dates as `YYYY-MM-DD`).
 
-| Endpoint | Returns | Accepts |
-|---|---|---|
-| `/api/health` | Database status | |
-| `/api/chats` | Chats, for the chat filter | |
-| `/api/people` | People, for the person filter | |
-| `/api/messages` | Messages and who reacted | all filters, `sort` (`date`, `length`, `reactions`), `reactionType`, `limit` |
-| `/api/stats/people` | Per-person message and reaction counts | `chat`, `from`, `to` |
-| `/api/stats/busiest-day` | Days with the most messages | all filters, `limit` |
-| `/api/stats/reaction-matrix` | How many times each person reacted to each other person | `chat`, `from`, `to` |
-| `/api/leaderboards/streaks` | Longest runs of consecutive days with a message | `chat`, `from`, `to`, `limit` |
+| Endpoint                     | Returns                                                 | Accepts                                                                      |
+| ---------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `/api/health`                | Database status                                         |                                                                              |
+| `/api/chats`                 | Chats, for the chat filter                              |                                                                              |
+| `/api/people`                | People, for the person filter                           |                                                                              |
+| `/api/messages`              | Messages and who reacted                                | all filters, `sort` (`date`, `length`, `reactions`), `reactionType`, `limit` |
+| `/api/stats/people`          | Per-person message and reaction counts                  | `chat`, `from`, `to`                                                         |
+| `/api/stats/busiest-day`     | Days with the most messages                             | all filters, `limit`                                                         |
+| `/api/stats/reaction-matrix` | How many times each person reacted to each other person | `chat`, `from`, `to`                                                         |
+| `/api/leaderboards/streaks`  | Longest runs of consecutive days with a message         | `chat`, `from`, `to`, `limit`                                                |
 
 ## Privacy
 
-`db/` holds copies of your messages and contacts. They're gitignored, so never commit them.
+`db/` holds copies of your messages and contacts. They're gitignored.
