@@ -1,2 +1,96 @@
-How to use:
-run import.js from root with a /db folder containing the copies of the chat and contacts databases
+# iMessage Stats
+
+A local dashboard of stats about your iMessage chats: who sends the most messages, who gets the most reactions, the most-reacted messages, streaks, busiest days, and who reacts to whom.
+
+Built with Node.js, PostgreSQL and Express. Everything runs on your Mac.
+
+## Requirements
+
+- macOS with iMessage
+- Node.js
+- PostgreSQL running locally
+
+## Setup
+
+Run every command from the project root, the `imessage-stats` folder that contains `package.json`:
+
+```bash
+cd path/to/imessage-stats
+```
+
+**1. Install dependencies** (from the project root)
+
+```bash
+npm install
+```
+
+**2. Create the database and tables** (from the project root)
+
+```bash
+createdb imessage-stats
+psql -d imessage-stats -f schema.sql
+```
+
+The connection settings are in `PG_CONFIG` in `import/config.js`. Change the `user` there if yours is different.
+
+**3. Copy your Messages and Contacts databases into `db/`**
+
+Copy these two files into a `db/` folder in the project, renaming them as shown (Finder is fine; press Cmd+Shift+G to open a `~/Library` path):
+
+| Copy | To |
+|---|---|
+| `~/Library/Messages/chat.db` | `db/chat-copy.db` |
+| `~/Library/Application Support/AddressBook/Sources/<ID>/AddressBook-v22.abcddb` | `db/contacts-copy.abcddb` |
+
+Use the Contacts file inside `Sources/`, not the one at the top of `AddressBook/`, which has no contacts in it. If `Sources/` has more than one folder, use the largest file.
+
+**4. Import** (from the project root)
+
+```bash
+node import/import.js
+```
+
+This must run from the project root, because `import/config.js` looks for `db/chat-copy.db` relative to the current folder.
+
+Your own messages are attributed to "Me". To use your name instead, run `MY_NAME="Your Name" node import/import.js`.
+
+**5. Start the server** (from the project root)
+
+```bash
+node api/server.js
+```
+
+This must run from the project root, because the server looks for `public/` relative to the current folder. From anywhere else the API still works but the dashboard shows "Cannot GET /".
+
+Then open http://localhost:3000. To have the server restart when you edit a file, use `node --watch api/server.js` instead.
+
+## Updating
+
+To add new messages, repeat steps 3 and 4. Rows that already exist are skipped.
+
+If your contacts have changed, or the first import used the wrong Contacts file, start fresh instead. Otherwise you'll get duplicate people:
+
+```bash
+dropdb imessage-stats
+```
+
+Then repeat steps 2 to 4 from the project root.
+
+## API
+
+Every endpoint is a GET request and returns JSON. The common filters are all optional: `chat` (a chat ID), `person` (a user ID), and `from` / `to` (dates as `YYYY-MM-DD`).
+
+| Endpoint | Returns | Accepts |
+|---|---|---|
+| `/api/health` | Database status | |
+| `/api/chats` | Chats, for the chat filter | |
+| `/api/people` | People, for the person filter | |
+| `/api/messages` | Messages and who reacted | all filters, `sort` (`date`, `length`, `reactions`), `reactionType`, `limit` |
+| `/api/stats/people` | Per-person message and reaction counts | `chat`, `from`, `to` |
+| `/api/stats/busiest-day` | Days with the most messages | all filters, `limit` |
+| `/api/stats/reaction-matrix` | How many times each person reacted to each other person | `chat`, `from`, `to` |
+| `/api/leaderboards/streaks` | Longest runs of consecutive days with a message | `chat`, `from`, `to`, `limit` |
+
+## Privacy
+
+`db/` holds copies of your messages and contacts. They're gitignored, so never commit them.
