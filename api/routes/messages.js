@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
   try {
     // validate input
     const { chat, person, from, to } = parseFilters(req.query);
-    const limit = parseNumber(req.limit, "limit") ?? 50;
+    const limit = parseNumber(req.query.limit, "limit") ?? 50;
     const sort = parseChoice(req.query.sort, "sort", ["date", "length", "reactions"]) ?? "date";
     const reactionType = parseChoice(req.query.reactionType, "reactionType", ["love", "like", "dislike", "laugh", "emphasize", "question", "emoji"]);
     const values = [chat, person, from, to, reactionType, sort, limit];

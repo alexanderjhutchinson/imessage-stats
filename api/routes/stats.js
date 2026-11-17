@@ -72,8 +72,8 @@ router.get("/people", async (req, res) => {
       name: row.name,
       messagesSent: row.messages_sent,
       reactionsSent: row.reactions_sent,
-      reactionsReceived: row.reactions_recieved,
-      avgReactionsPerMessage: row.avg_reactions_recieved_per_message,
+      reactionsReceived: row.reactions_received,
+      avgReactionsPerMessage: row.avg_reactions_per_message,
       maxReactionsOnMessage: row.max_reactions_on_message,
       messageReactionRatio: row.message_reaction_ratio,
     }));

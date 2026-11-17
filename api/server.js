@@ -9,6 +9,9 @@ import messagesRouter from "./routes/messages.js";
 const app = express();
 const PORT = 3000;
 
+// Serve the dashboard (public/index.html, style.css, app.js) at http://localhost:3000/.
+app.use(express.static("public"));
+
 app.get("/api/health", async (req, res) => {
   const result = await pool.query("SELECT NOW()");
   res.json({ ok: true, dbTime: result.rows[0].now });
