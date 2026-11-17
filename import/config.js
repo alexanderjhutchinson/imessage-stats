@@ -1,6 +1,6 @@
 // Source database copies
-export const chatDbPath = "../db/chat-copy.db";
-export const contactDbPath = "../db/AddressBook-v22.abcddb";
+export const chatDbPath = "db/chat-copy.db";
+export const contactDbPath = "db/contacts-copy.abcddb";
 
 // Your own name in the people table
 export const MY_NAME = process.env.MY_NAME || "Me";
