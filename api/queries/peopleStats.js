@@ -55,18 +55,18 @@ received_and_max AS (
 SELECT
   p.user_id,
   p.name,
-  COALESCE(ms.messages_sent, 0)      AS messages_sent,
-  COALESCE(rs.reactions_sent, 0)     AS reactions_sent,
-  COALESCE(rm.reactions_received, 0) AS reactions_received,
+  COALESCE(ms.messages_sent, 0)::int      AS messages_sent,
+  COALESCE(rs.reactions_sent, 0)::int     AS reactions_sent,
+  COALESCE(rm.reactions_received, 0)::int AS reactions_received,
   ROUND(
     COALESCE(rm.reactions_received, 0)::numeric / NULLIF(ms.messages_sent, 0),
     2
-  ) AS avg_reactions_per_message,
-  COALESCE(rm.max_reactions, 0)      AS max_reactions_on_message,
+  )::float AS avg_reactions_per_message,
+  COALESCE(rm.max_reactions, 0)::int      AS max_reactions_on_message,
   ROUND(
     COALESCE(ms.messages_sent, 0)::numeric / NULLIF(rs.reactions_sent, 0),
     2
-  ) AS message_reaction_ratio
+  )::float AS message_reaction_ratio
 FROM people AS p
 LEFT JOIN messages_sent AS ms
   ON ms.user_id = p.user_id

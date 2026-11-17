@@ -5,7 +5,7 @@ SELECT
   rp.name     AS reactor_name,
   sp.user_id  AS reacted_to_id,
   sp.name     AS reacted_to_name,
-  COUNT(*)    AS reaction_count
+  COUNT(*)::int    AS reaction_count
 FROM reactions AS r
 JOIN messages AS m
   ON m.msg_id = r.target_msg_id

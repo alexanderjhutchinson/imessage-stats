@@ -36,3 +36,12 @@ export function parseFilters(query) {
   }
   return filters;
 }
+
+export function parseChoice(value, name, allowed) {
+  if (value === undefined || value === "") return null;
+
+  if (!allowed.includes(value)) {
+    throw new ValidationError(`${name} must be one of: ${allowed.join(", ")}`);
+  }
+  return value;
+}

@@ -37,15 +37,14 @@ longest_streaks AS (
   ORDER BY user_id, streak_days DESC, streak_end DESC
 )
 SELECT
-  RANK() OVER (ORDER BY ls.streak_days DESC) AS rank,
+  (RANK() OVER (ORDER BY ls.streak_days DESC))::int AS rank,
   p.user_id,
   p.name,
-  ls.streak_days AS longest_streak_days,
-  ls.streak_start,
-  ls.streak_end
+  ls.streak_days::int AS longest_streak_days,
+  ls.streak_start::text,
+  ls.streak_end::text
 FROM longest_streaks AS ls
 JOIN people AS p
   ON p.user_id = ls.user_id
 ORDER BY ls.streak_days DESC, ls.streak_end DESC
-LIMIT $4;
-`;
+LIMIT $4;`;

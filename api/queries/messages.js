@@ -4,13 +4,13 @@ export const messagesQuery = `
 SELECT
     m.msg_id,
     m.msg_content,
-    m.msg_date,
+    m.msg_date::date::text,
     LENGTH(m.msg_content)  AS msg_length,
     p.user_id              AS sender_id,
     p.name                 AS sender_name,
     c.chat_num             AS chat_num,
     c.display_name         AS chat_name,
-    COUNT(r.reaction_id)   AS reaction_count,
+    COUNT(r.reaction_id)::int   AS reaction_count,
     COALESCE(
         json_agg(
             json_build_object(
