@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>iMessage Stats</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>iMessage Stats</h1>
+
+  <!-- Filter bar: changing any of these reloads every section. -->
+  <form id="filters">
+    <label>Chat
+      <select id="filter-chat"><option value="">All chats</option></select>
+    </label>
+    <label>Person
+      <select id="filter-person"><option value="">Everyone</option></select>
+    </label>
+    <label>From <input type="date" id="filter-from"></label>
+    <label>To <input type="date" id="filter-to"></label>
+    <button type="button" id="filter-clear">Clear</button>
+  </form>
+  <div id="filter-error"></div>
+  <p class="note">The person filter only applies to Messages and Busiest days. The other endpoints don't accept it.</p>
+
+  <!-- Each section has an empty container that app.js fills in. -->
+  <section>
+    <h2>User stats</h2>
+    <div id="people-stats"></div>
+  </section>
+
+  <section>
+    <h2>Messages</h2>
+    <div class="controls">
+      <label>Sort
+        <select id="msg-sort">
+          <option value="date">Newest</option>
+          <option value="length">Longest</option>
+          <option value="reactions">Most reactions</option>
+        </select>
+      </label>
+      <label>Reaction type
+        <select id="msg-reaction-type">
+          <option value="">Any</option>
+          <option value="love">love</option>
+          <option value="like">like</option>
+          <option value="dislike">dislike</option>
+          <option value="laugh">laugh</option>
+          <option value="emphasize">emphasize</option>
+          <option value="question">question</option>
+          <option value="emoji">emoji</option>
+        </select>
+      </label>
+      <label>Show
+        <select id="msg-limit">
+          <option>25</option>
+          <option selected>50</option>
+          <option>100</option>
+        </select>
+      </label>
+    </div>
+    <div id="messages"></div>
+  </section>
+
+  <section>
+    <h2>Leaderboards</h2>
+    <div class="two-col">
+      <div>
+        <h3>Most-reacted messages</h3>
+        <div id="top-messages"></div>
+      </div>
+      <div>
+        <h3>Longest streaks</h3>
+        <div id="streaks"></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Busiest days</h2>
+    <div id="busiest-days"></div>
+    <div id="day-messages"></div>
+  </section>
+
+  <section>
+    <h2>Who reacts to whom</h2>
+    <div id="reaction-matrix"></div>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>
