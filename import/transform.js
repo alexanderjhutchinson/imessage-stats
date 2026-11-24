@@ -44,7 +44,7 @@ function contactName(first, last) {
 
 // Transform
 export function transform(data) {
-  const { chats, contacts, handles, messages, reactions } = data;
+  const { chats, contacts, handles, messages, reactions, attachments } = data;
 
   // Normalize chat.db handles
   const cleanHandles = handles.map((h) => ({
@@ -135,11 +135,21 @@ export function transform(data) {
     return { chatId: c.guid, displayName: displayName };
   });
 
+  const cleanAttachments = attachments
+    .map((a) => ({
+      attachmentId: a.attachment_id,
+      msgId: a.msg_id,
+      filename: a.filename,
+      mimeType: a.mime_type,
+    }))
+    .filter((a) => msgId.has(a.msgId));
+
   return {
     chats: cleanChats,
     people: [...people.values()],
     handles: personHandles,
     messages: cleanMessages,
     reactions: cleanReactions,
+    attachments: cleanAttachments,
   };
 }
