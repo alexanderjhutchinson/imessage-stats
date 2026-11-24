@@ -3,7 +3,7 @@ import { PG_CONFIG } from "./config.js";
 
 export async function load(data) {
   // unpack tables
-  const { chats, people, handles, messages, reactions } = data;
+  const { chats, people, handles, messages, reactions, attachments } = data;
 
   // connect to pg db
   const client = new pg.Client(PG_CONFIG);
@@ -104,6 +104,19 @@ export async function load(data) {
       await client.query(reactionQuery, [r.reactionId, userIdByKey.get(r.reactorKey), r.targetMsgId, r.type, r.date, r.emoji]);
       reactionCount++;
       if (reactionCount % 10000 === 0) console.log(`reactions: ${reactionCount} / ${reactions.length}`);
+    }
+
+    // insert attachments
+    const attachmentsQuery = `
+      INSERT INTO attachments (attachment_id, msg_id, filename, mime_type)
+      VALUES ($1, $2, $3, $4)
+      ON CONFLICT (attachment_id) DO NOTHING
+    `;
+    let attachmentCount = 0;
+    for (const a of attachments) {
+      await client.query(attachmentsQuery, [a.attachmentId, a.msgId, a.filename, a.mimeType]);
+      attachmentCount++;
+      if (attachmentCount % 10000 === 0) console.log(`attachments: ${attachmentCount} / ${attachments.length}`);
     }
 
     // Commit

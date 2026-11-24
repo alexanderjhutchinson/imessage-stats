@@ -142,7 +142,7 @@ export function transform(data) {
       filename: a.filename,
       mimeType: a.mime_type,
     }))
-    .filter((a) => msgId.has(a.msgId));
+    .filter((a) => msgIds.has(a.msgId));
 
   return {
     chats: cleanChats,
