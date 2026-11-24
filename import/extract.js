@@ -69,7 +69,22 @@ export function extract() {
   `;
   const reactions = chatDb.prepare(reactionsQuery).all();
 
+  // records for attachments table
+  const attachmentsQuery = `
+    SELECT
+      a.guid as attachment_id,
+      m.guid as msg_id,
+      a.filename as filename,
+      a.mime_type as mime_type
+    FROM attachment AS a
+    JOIN message_attachment_join AS maj ON maj.attachment_id = a.ROWID
+    JOIN message AS m ON m.ROWID = maj.message_id
+    WHERE m.associated_message_type = 0
+      AND m.item_type = 0
+  `;
+  const attachments = chatDb.prepare(attachmentsQuery).all();
+
   chatDb.close();
   contactDb.close();
-  return { chats, contacts, handles, messages, reactions };
+  return { chats, contacts, handles, messages, reactions, attachments };
 }
