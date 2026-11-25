@@ -92,10 +92,25 @@ function renderMessageList(messages) {
 
   return messages
     .map((m) => {
-      const content =
-        m.content == null
-          ? `<span class="empty-content">(no text, probably a photo or attachment)</span>`
-          : escapeHtml(m.content);
+      // Photos and videos: <img> or <video> pointing at /api/attachments/:id.
+      // Other attachment types (voice memos, link previews, files) are skipped.
+      const media = m.attachments
+        .map((a) => {
+          const src = escapeHtml(a.url);
+          if (a.mimeType?.startsWith("image/")) return `<img src="${src}" loading="lazy" alt="">`;
+          if (a.mimeType?.startsWith("video/")) return `<video src="${src}" controls preload="metadata"></video>`;
+          return "";
+        })
+        .join("");
+
+      // iMessage puts an invisible "￼" placeholder in the text for each attachment; remove those.
+      const text = (m.content ?? "").replaceAll("￼", "").trim();
+      let content = "";
+      if (text) {
+        content = escapeHtml(text);
+      } else if (!media) {
+        content = `<span class="empty-content">(no text, probably an attachment)</span>`;
+      }
 
       // e.g. "Jordan (laugh), Priya (laugh)"
       const reactors = m.reactors
@@ -108,7 +123,8 @@ function renderMessageList(messages) {
             <strong>${personName(m.sender)}</strong> in ${chatName(m.chat)}
             · ${escapeHtml(m.date)} · ${fmt(m.reactionCount)} reactions
           </div>
-          <div class="content">${content}</div>
+          ${content ? `<div class="content">${content}</div>` : ""}
+          ${media ? `<div class="media">${media}</div>` : ""}
           ${reactors ? `<div class="reactors">${reactors}</div>` : ""}
         </div>`;
     })

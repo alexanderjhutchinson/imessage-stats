@@ -47,6 +47,9 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
 .message { border-bottom: 1px solid #eee; padding: 8px 0; }
 .message .meta { font-size: 12px; color: #666; }
 .message .content { margin: 4px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.message .media { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.message .media img,
+.message .media video { max-height: 220px; max-width: 100%; border-radius: 6px; background: #eee; }
 .message .reactors { font-size: 13px; color: #555; }
 .empty-content { color: #999; font-style: italic; }
 
