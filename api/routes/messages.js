@@ -26,6 +26,7 @@ router.get("/", async (req, res) => {
       length: row.msg_length,
       reactionCount: row.reaction_count,
       reactors: row.reactors,
+      attachments: row.attachments,
     }));
 
     res.json(messages);

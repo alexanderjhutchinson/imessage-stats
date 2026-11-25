@@ -21,7 +21,21 @@ SELECT
             ORDER BY r.reaction_date
         ) FILTER (WHERE r.reaction_id IS NOT NULL),
         '[]'
-    ) AS reactors
+    ) AS reactors,
+    (
+        SELECT COALESCE(
+            json_agg(
+                json_build_object(
+                    'attachmentId', a.attachment_id,
+                    'mimeType',     a.mime_type,
+                    'url',          '/api/attachments/' || a.attachment_id
+                )
+            ),
+            '[]'
+        )
+        FROM attachments AS a
+        WHERE a.msg_id = m.msg_id
+    ) AS attachments
 FROM messages AS m
 JOIN people AS p
     ON p.user_id = m.msg_sender_id
