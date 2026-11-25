@@ -32,6 +32,19 @@ const chatName = (c) => escapeHtml(c.name ?? `Unnamed chat #${c.chatId}`);
 // (`x == null` is true for both null and undefined.)
 const fmt = (n) => (n == null ? "—" : n.toLocaleString());
 
+// Tapback name -> the emoji iMessage shows for it.
+const REACTION_EMOJI = {
+  love: "❤️",
+  like: "👍",
+  dislike: "👎",
+  laugh: "😂",
+  emphasize: "‼️",
+  question: "❓",
+};
+
+// Custom emoji reactions carry their own emoji; the others use the table above.
+const reactionEmoji = (r) => escapeHtml(r.emoji ?? REACTION_EMOJI[r.type] ?? r.type);
+
 // Call the API. `params` is an object like { chat: "12", from: "" }.
 // Empty values are skipped, so we only send the filters that are actually set.
 async function api(path, params = {}) {
@@ -112,9 +125,9 @@ function renderMessageList(messages) {
         content = `<span class="empty-content">(no text, probably an attachment)</span>`;
       }
 
-      // e.g. "Jordan (laugh), Priya (laugh)"
+      // e.g. "Jordan 😂, Priya ❤️"
       const reactors = m.reactors
-        .map((r) => `${personName(r)} (${escapeHtml(r.type)})`)
+        .map((r) => `${personName(r)} ${reactionEmoji(r)}`)
         .join(", ");
 
       return `

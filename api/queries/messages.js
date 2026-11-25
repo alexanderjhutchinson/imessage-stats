@@ -16,7 +16,8 @@ SELECT
             json_build_object(
                 'userId', rp.user_id,
                 'name',   rp.name,
-                'type',   r.reaction_type
+                'type',   r.reaction_type,
+                'emoji',  r.emoji
             )
             ORDER BY r.reaction_date
         ) FILTER (WHERE r.reaction_id IS NOT NULL),
