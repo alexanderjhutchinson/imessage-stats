@@ -11,5 +11,5 @@ export const PG_CONFIG = {
   host: "localhost",
   port: 5432,
   user: "alexanderhutchinson",
-  database: "imessage-stats",
+  database: process.env.PG_DB || "imessage-stats",
 };
